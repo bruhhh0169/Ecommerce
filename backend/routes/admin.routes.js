@@ -8,7 +8,7 @@ const router = express.Router();
 //importar los middleware
 
 const {verificarAuth} = require ('../middleware/auth');
-const {esAministrador, esAdminOAuxiliar, soloAdiministrador} = require ('../middleware/checkRole');
+const {soloAdministrador, esAdminOAuxiliar} = require ('../middleware/checkRole');
 
 //importar configuracion de multer para la subida de imagenes 
 const {update} = require ('../config/multer');
@@ -48,7 +48,7 @@ const pedidoController = require ('../controllers/pedido.controller');
  router.patch ('/categorias/:id/toggle', categoriaController.toggleCategoria);
 
  // eliminarCategoria - Eliminar categoría
- router.delete ('/categorias/:id', soloAdiministrador, categoriaController.eliminarCategoria);
+router.delete ('/categorias/:id', soloAdministrador, categoriaController.eliminarCategoria);
 
  // getEstadisticaCategoria - Obtener estadísticas de categoría
  router.get('/categorias/:id/stats', categoriaController.getEstadisticaCategoria);
@@ -75,7 +75,7 @@ const pedidoController = require ('../controllers/pedido.controller');
  router.patch ('/subcategorias/:id/toggle', subcategoriaController.toggleSubcategoria);
 
  // eliminarSubcategoria - Eliminar subcategoría
- router.delete ('/subcategorias/:id', soloAdiministrador, subcategoriaController.eliminarSubcategoria);
+router.delete ('/subcategorias/:id', soloAdministrador, subcategoriaController.eliminarSubcategoria);
 
  // getEstadisticaSubcategoria - Obtener estadísticas de subcategoría
  router.get('/subcategorias/:id/stats', subcategoriaController.getEstadisticaSubcategoria);
@@ -87,25 +87,25 @@ const pedidoController = require ('../controllers/pedido.controller');
   */
 
  // getUsuarios - Obtener todos los usuarios
- router.get ('/usuario', usuarioController.getUsuarios);
+ router.get ('/usuarios', usuarioController.getUsuarios);
 
  // getUsuarioById - Obtener usuario por ID
- router.get('/usuario/:id', usuarioController.getUsuarioById);
+ router.get('/usuarios/:id', usuarioController.getUsuarioById);
 
  // crearUsuario - Crear nuevo usuario
- router.post ('/usuario', soloAdiministrador, usuarioController.crearUsuario);
+router.post ('/usuarios', soloAdministrador, usuarioController.crearUsuario);
 
  // actualizaUsuario - Actualizar usuario
- router.put ('/usuario/:id', usuarioController.actualizaUsuario);
+ router.put ('/usuarios/:id', soloAdministrador, usuarioController.actualizaUsuario);
 
  // toggleUsuario - Activar/Desactivar usuario
- router.patch ('/usuario/:id/toggle', soloAdiministrador, usuarioController.toggleUsuario);
+router.patch ('/usuarios/:id/toggle', soloAdministrador, usuarioController.toggleUsuario);
 
  // eliminarUsuario - Eliminar usuario
- router.delete ('/usuario/:id', soloAdiministrador, usuarioController.eliminarUsuario);
+router.delete ('/usuarios/:id', soloAdministrador, usuarioController.eliminarUsuario);
 
  // getEstadisticaUsuarios - Obtener estadísticas de usuarios
- router.get('/usuario/:id/stats', usuarioController.getEstadisticaUsuarios);
+ router.get('/usuarios/:id/stats', usuarioController.getEstadisticaUsuarios);
 
  /**
   * ========================================
@@ -114,10 +114,10 @@ const pedidoController = require ('../controllers/pedido.controller');
   */
 
  // getProductos - Obtener todos los productos
- router.get ('/producto', productoController.getProductos);
+ router.get ('/productos', productoController.getProductos);
 
  // getProductoById - Obtener producto por ID
- router.get('/producto/:id', productoController.getProductoById);
+ router.get('/productos/:id', productoController.getProductoById);
 
  // crearProducto - Crear nuevo producto
  router.post('/productos', productoController.crearProducto);
@@ -129,7 +129,7 @@ const pedidoController = require ('../controllers/pedido.controller');
  router.patch('/productos/:id/toggle', productoController.toggleProducto);
 
  // eliminarProducto - Eliminar producto
- router.delete('/productos/:id', soloAdiministrador, productoController.eliminarProducto);
+router.delete('/productos/:id', soloAdministrador, productoController.eliminarProducto);
 
  // actualizarStock - Actualizar stock del producto
  router.get('/productos/:id/stocks', productoController.actualizarStock);
@@ -148,6 +148,7 @@ const pedidoController = require ('../controllers/pedido.controller');
 
  // getPedidoById - Obtener pedido por ID
  router.get('/pedido/:id', pedidoController.getPedidoById);
+ router.get('/pedidos/:id', pedidoController.getPedidoById);
 
  // cancelarPedido - Cancelar pedido
  router.patch('/pedidos/:id/cancelar', pedidoController.cancelarPedido);

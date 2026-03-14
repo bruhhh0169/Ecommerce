@@ -44,9 +44,10 @@ const Subcategoria = sequelize.define('Subcategoria', {
     /**
      * Descripcion de la subcategoria 
      */
-    desripcion: {
+    descripcion: {
         type: DataTypes.TEXT,
         allowNull: true,
+        field: 'desripcion'
     },
 
     /**

@@ -36,7 +36,7 @@ const DetallePedido = sequelize.define('DetallePedido', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE', //si se elimina el pedido se eliminan los detalles asociados
         validate:{
-            notEmpay:{
+            notNull:{
                 msg: 'Debe especificar el ID del pedido del detalle del pedido'
             }
         }
@@ -217,7 +217,7 @@ DetallePedido.calcularTotalPedido = async function (pedidoId) {
 
   let total = 0;
   for (const detalle of detalles) {
-    total += parseFloat(detalle.Subtotal()); //Suma el subtotal de cada detalle al total
+    total += parseFloat(detalle.subtotal || 0);
   }
   return total;
 };

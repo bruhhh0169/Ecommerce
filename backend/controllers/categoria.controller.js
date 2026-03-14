@@ -87,7 +87,7 @@ const getCategoriasById = async (req, res) => {
             include:[
                 {
                     model:Subcategoria,
-                    as: 'subcategoria',
+                    as: 'subcategorias',
                     attributes: ['id','nombre',
                         'descripcion', 'activo']
                 },
@@ -226,7 +226,7 @@ const actualizaCategoria = async (req, res) =>{
         // Actualizar campos
         if (nombre!==undefined) categoria.nombre = nombre;
         if (descripcion!==undefined) categoria.descripcion = descripcion;
-        if (activo!==undefined) categoria.activo = activo;
+        if (req.body.activo!==undefined) categoria.activo = req.body.activo;
 
         // guardar cambios
         await categoria.save();

@@ -1,32 +1,23 @@
 /**
- * middleware de verificar roles 
- * este middleware verifica que el usuario tenga rol requerio
- * debe usarse despues de middleware de autenticacion
+ * middleware para verificar si el usuario es admin o auxiliar
  */
-
-const esAdministrador = (req, res, next) => {
+const esAdminOAuxiliar = (req, res, next) => {
     try{
-        //veriricar que exista req.usuario ( viene de la autenticacion)
         if(!req.usuario){
             return res.status(401).json ({
                 success : false,
                 message: ' no autorizado debes iniciar sesion primero'
             })
         }
-
-        // verificar que el rol es administrador
-        if(req.usuario.rol !== 'administrador') {
+        if(req.usuario.rol !== 'administrador' && req.usuario.rol !== 'auxiliar') {
             return res.status(403).json({
                 success: false,
-                message: ' acceso denegado se requiere permisos de administrador'
+                message: ' acceso denegado se requiere permisos de administrador o auxiliar'
             });
         }
-
-        // el usuario es administrador continuar
         next();
-        
     }catch(error){
-        console.error('Error en middleware esAdministrador', error);
+        console.error('Error en middleware esAdminOAuxiliar', error);
         return res.status(500).json ({
             success: false,
             message : 'Error en la verificar permisos',
@@ -34,6 +25,35 @@ const esAdministrador = (req, res, next) => {
         });
     }
 };
+/**
+ * middleware para verificar si el usuario es solo administrador
+ */
+const soloAdministrador = (req, res, next) => {
+    try{
+        if(!req.usuario){
+            return res.status(401).json ({
+                success : false,
+                message: ' no autorizado debes iniciar sesion primero'
+            })
+        }
+        if(req.usuario.rol !== 'administrador') {
+            return res.status(403).json({
+                success: false,
+                message: ' acceso denegado se requiere permisos exclusivos de administrador'
+            });
+        }
+        next();
+    }catch(error){
+        console.error('Error en middleware soloAdministrador', error);
+        return res.status(500).json ({
+            success: false,
+            message : 'Error en la verificar permisos',
+            error: error.message
+        });
+    }
+};
+
+
 
 /**
  * middleware para verificar si el usuario es cliente 
@@ -151,40 +171,6 @@ const esPropioUsuarioOAdmin = (req, res, next) => {
     }
 };
 
-/**
- * middleware para verificar que el usuario es administrador o auxiliar
- * permite al acceso a usuario con rol de administrador o axiliar
- */
-
-const esAdminOAuxiliar = (req, res, next) => {
-    try{
-        //veriricar que exista req.usuario ( viene de la autenticacion)
-        if(!req.usuario){
-            return res.status(401).json ({
-                success : false,
-                message: ' no autorizado debes iniciar sesion primero'
-            })
-        }
-
-        // verificar que el rol es administrador o auxiliar
-        if(!['administrador', 'auxiliar'].includes(req.usuario.rol)) {
-            return res.status(403).json({
-                success: false,
-                message: ' acceso denegado se requiere permisos de administrador o auxiliar'
-            });
-        }
-
-        // el usuario es administrador continuar
-        next();
-    }catch(error){
-        console.error('Error en middleware esAdminOAuxiliar', error);
-        return res.status(500).json ({
-            success: false,
-            message : 'Error en la verificar permisos',
-            error: error.message
-        });
-    }
-};
 
 /**
  * middleware para verificar que el usuario es solo administrador no auxiliar
@@ -222,11 +208,43 @@ const soloAdiministrador = (req, res, next) => {
 };
 
 //exportar los middleware
+/**
+ * middleware de verificar roles 
+ * este middleware verifica que el usuario tenga rol requerio
+ * debe usarse despues de middleware de autenticacion
+ */
+const esAdministrador = (req, res, next) => {
+    try{
+        //veriricar que exista req.usuario ( viene de la autenticacion)
+        if(!req.usuario){
+            return res.status(401).json ({
+                success : false,
+                message: ' no autorizado debes iniciar sesion primero'
+            })
+        }
+        // verificar que el rol es administrador
+        if(req.usuario.rol !== 'administrador') {
+            return res.status(403).json({
+                success: false,
+                message: ' acceso denegado se requiere permisos de administrador'
+            });
+        }
+        // el usuario es administrador continuar
+        next();
+    }catch(error){
+        console.error('Error en middleware esAdministrador', error);
+        return res.status(500).json ({
+            success: false,
+            message : 'Error en la verificar permisos',
+            error: error.message
+        });
+    }
+};
 module.exports = {
+    soloAdministrador,
     esAdministrador,
     esCliente,
-    tieneRol,
-    esPropioUsuarioOAdmin,
     esAdminOAuxiliar,
-    soloAdiministrador
+    tieneRol,
+    esPropioUsuarioOAdmin
 };

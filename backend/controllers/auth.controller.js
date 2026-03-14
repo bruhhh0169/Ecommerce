@@ -138,6 +138,7 @@ const login = async (req, res) => {
         });
 
         if(!usuario) {
+            console.log(`Login failed: usuario no encontrado para email ${email}`);
             return res.status(401).json({
                 success: false,
                 message: 'creenciales invalidas'
@@ -156,6 +157,7 @@ const login = async (req, res) => {
         const passwordValida = await usuario.compararPassword(password);
 
         if(!passwordValida){
+            console.log(`Login failed: password invalido para email ${email}`);
             return  res.status(401).json({
                 success: false,
                 message: 'credenciales invalidas'

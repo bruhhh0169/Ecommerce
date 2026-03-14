@@ -101,24 +101,47 @@ const Producto = sequelize.define('Producto', {
      * categoriaId - ID de la categoria a la que pertenece (FOREIGNKEY)
      * Esta es la relacion con la tabla categoria
      */
+    categoriaId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'categorias',
+            key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
+        validate: {
+            notNull: {
+                msg: 'Debe seleccionar una categoria'
+            }
+        }
+    },
     subcategoriaId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'subcategorias', // nombr de la tabla relacionada
-            Key: 'id' // campo de la tabla relacionada
+            model: 'subcategorias',
+            key: 'id'
         },
-        onUpdate: 'CASCADE', // Si se actualiza el id, actualizar aca 
-        // tambien
-        onDelete: 'CASCADE',// si se elimina la categoria eliminar de   
-        // las subcategoria
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         validate: {
             notNull: {
-                msg: 'Debe selecionar una categoria'
+                msg: 'Debe seleccionar una subcategoria'
             }
         }
     },
-
+    imagen: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        field: 'Imagen',
+        validate: {
+            is: {
+                args: [/\.(jpg|jpeg|png|gif)$/i],
+                msg: 'El archivo de imagen debe ser un archivo JPG,JPEG,PNG O GIF'
+            },
+        },
+    },
     /**
      * activo estado de la subcategoria
      * si es false los productos de esta subcategoria se ocultan
@@ -131,7 +154,7 @@ const Producto = sequelize.define('Producto', {
 }, {
     //Opciones del modelo
     
-    tableName: 'Productos',
+    tableName: 'productos',
     timestamps: true, // Agrega campos createdAt y updatedAt
 
     /** 
@@ -235,6 +258,14 @@ Producto.prototype.contarproductos = function() {
     return `${baseUrl}/uploads/${this.imagen}`;
 };
 
+Producto.prototype.haystock = function(cantidad) {
+    const cantidadNum = Number(cantidad);
+    if (Number.isNaN(cantidadNum) || cantidadNum <= 0) {
+        return false;
+    }
+    return this.stock >= cantidadNum;
+};
+
 /**
  * metodo para verificar si hay stock disponible
  * 
@@ -254,7 +285,7 @@ Producto.prototype.hayStock = function (cantidad = 3) {
  * @returns {Promise<void>}
  */
 Producto.prototype.reducirStock = async function (cantidad) {
-    if(this.hayStock(cantidad)){
+    if(!this.hayStock(cantidad)){
         throw new Error('Stock insuficiente');
     }
     this.stock -= cantidad;
